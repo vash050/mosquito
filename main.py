@@ -19,13 +19,19 @@ class Mosquito:
         self.routes = routes
         self.fronts = fronts
 
+    @staticmethod
+    def correct_url(path_in):
+        if path_in[-1] != '/' and path_in[1:7] != 'static':
+            path_in = path_in + '/'
+        return path_in
+
     def __call__(self, environ, start_response):
         setup_testing_defaults(environ)
         print('run')
         path = environ['PATH_INFO']
+        path = self.correct_url(path)
         if path in self.routes:
             view = self.routes[path]
-            print(view)
         else:
             view = NotFoundPage404View()
         request = {}
@@ -34,6 +40,3 @@ class Mosquito:
         code, body = view(request)
         start_response(code, [('Content-Type', 'text/html')])
         return body
-
-
-

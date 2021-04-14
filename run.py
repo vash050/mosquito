@@ -5,6 +5,6 @@ from url import routes
 
 application = Mosquito(routes, fronts)
 
-with make_server('', 8000, application) as httpd:
-    print('Serving on port 8000...')
+with make_server('', 8080, application) as httpd:
+    print('Serving on port 8080...')
     httpd.serve_forever()
