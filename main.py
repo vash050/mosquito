@@ -1,20 +1,7 @@
 import quopri
-from datetime import date
-from wsgiref.util import setup_testing_defaults
 
 from mosquito_framework.requests import PostRequests, GetRequests
-from views import NotFoundPage404View
-
-
-def secret_front(request):
-    request['date'] = date.today()
-
-
-def other_front(request):
-    request['key'] = 'key'
-
-
-fronts = [secret_front, other_front]
+from views import NotFound404View
 
 
 class Mosquito:
@@ -26,7 +13,7 @@ class Mosquito:
     def __call__(self, environ, start_response):
 
         path = environ['PATH_INFO']
-        if path[-1] != '/' and path[1:7] != 'static':
+        if path[-1] != '/':
             path = f'{path}/'
 
         request = {}
@@ -47,13 +34,13 @@ class Mosquito:
         if path in self.routes:
             view = self.routes[path]
         else:
-            view = NotFoundPage404View()
+            view = NotFound404View()
         request = {}
         for front in self.fronts:
             front(request)
         code, body = view(request)
         start_response(code, [('Content-Type', 'text/html')])
-        return body
+        return [body.encode('utf-8')]
 
     @staticmethod
     def decode_value(data):

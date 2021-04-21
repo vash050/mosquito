@@ -1,7 +1,7 @@
 Для запуска сервера через uwsgi требуется:
 1. изменить в файле templator.py folder='../templates' на folder='templates'
 2. в файле run.py закомментировать with make_server('', 8080, application) as httpd
-3. выполнить команду uwsgi --http :8080 --wsgi-file mosquito_framework/run.py
+3. выполнить команду uwsgi --http :8080 --wsgi-file run.py
 
 __________________________________________________________________________________________
 
