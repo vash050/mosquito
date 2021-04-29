@@ -6,9 +6,9 @@ from views import NotFound404View
 
 class Mosquito:
 
-    def __init__(self, routes, fronts):
-        self.routes = routes
-        self.fronts = fronts
+    def __init__(self, routes_in, fronts_in):
+        self.routes_in = routes_in
+        self.fronts_in = fronts_in
 
     def __call__(self, environ, start_response):
 
@@ -31,12 +31,12 @@ class Mosquito:
 
         # setup_testing_defaults(environ)
         print('run')
-        if path in self.routes:
-            view = self.routes[path]
+        if path in self.routes_in:
+            view = self.routes_in[path]
         else:
             view = NotFound404View()
-        request = {}
-        for front in self.fronts:
+        # request = {}
+        for front in self.fronts_in:
             front(request)
         code, body = view(request)
         start_response(code, [('Content-Type', 'text/html')])
