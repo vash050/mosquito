@@ -29,13 +29,10 @@ class Mosquito:
             request['request_params'] = request_params
             print(f'Пришел get запрос: {request_params}')
 
-        # setup_testing_defaults(environ)
-        print('run')
         if path in self.routes_in:
             view = self.routes_in[path]
         else:
             view = NotFound404View()
-        # request = {}
         for front in self.fronts_in:
             front(request)
         code, body = view(request)
@@ -50,3 +47,25 @@ class Mosquito:
             val_decode_str = quopri.decodestring(val).decode('UTF-8')
             new_data[key] = val_decode_str
         return new_data
+
+
+class DebugApplication(Mosquito):
+
+    def __init__(self, routes_in, fronts_in):
+        self.application = Mosquito(routes_in, fronts_in)
+        super().__init__(routes_in, fronts_in)
+
+    def __call__(self, env, start_response):
+        print('DEBUG MODE')
+        print(env)
+        return self.application(env, start_response)
+
+
+class FakeApplication(Mosquito):
+    def __init__(self, routes_in, fronts_in):
+        self.application = Mosquito(routes_in, fronts_in)
+        super().__init__(routes_in, fronts_in)
+
+    def __call__(self, env, start_response):
+        start_response('200 OK', [('Content-Type', 'text/html')])
+        return [b'Hello from Fake']
