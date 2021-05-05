@@ -35,6 +35,7 @@ class Mosquito:
             view = NotFound404View()
         for front in self.fronts_in:
             front(request)
+        print(request)
         code, body = view(request)
         start_response(code, [('Content-Type', 'text/html')])
         return [body.encode('utf-8')]
